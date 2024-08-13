@@ -1,5 +1,7 @@
 import LoginPage from '@/views/LoginPage.vue'
-import JumpTest from '@/views/JumpTest.vue'
+import HomePage from "@/views/HomePage.vue";
+import AboutPage from "@/views/AboutPage.vue";
+import JumpPage from "@/views/JumpPage.vue";
 
 const routes = [
     {
@@ -8,9 +10,14 @@ const routes = [
         component: LoginPage
     },
     {
-        name: 'JumpTest',
-        path: '/JumpTest',
-        component: JumpTest
+        name: '/JumpPage',
+        path: '/JumpPage',
+        redirect: '/HomePage',
+        component: JumpPage,
+        children: [
+            {path: '/HomePage', name: 'HomePage', component: HomePage},
+            {path: '/AboutPage', name: 'AboutPage', component: AboutPage}
+        ]
     }
 ];
 export default routes

@@ -105,6 +105,7 @@
 
 <script>
 import qs from 'qs'
+
 export default {
   name: 'LoginPage',
   data () {
@@ -148,11 +149,13 @@ export default {
             if (successResponse.data.code !== 200) {
               this.loginForm.message = successResponse.data.message
             } else {
-              this.$router.push('/JumpTest', () => {}, () => {})
+              console.log('登录成功')
+              this.$router.push({path: '/JumpPage'})
             }
           })
           .catch(failResponse => {
-            console.log(failResponse.data)
+            console.log('12345566')
+            console.log(failResponse)
           })
     },
     // // 重置登录表单
