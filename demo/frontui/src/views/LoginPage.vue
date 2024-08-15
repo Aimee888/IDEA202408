@@ -105,6 +105,7 @@
 
 <script>
 import qs from 'qs'
+import Global from '@/components/GlobalIp.vue'
 
 export default {
   name: 'LoginPage',
@@ -112,8 +113,8 @@ export default {
     return {
       // 数据绑定对象
       loginForm: {
-        username: 'lili',
-        password: '123',
+        username: 'hanhan',
+        password: '0525',
         message: ''
       },
       loginFormRules: {
@@ -143,7 +144,7 @@ export default {
     Login () {
       /* http://localhost:8081/api/login */
       this.$axios
-          .post('http://192.168.8.102:8081/api/login', qs.stringify(this.loginForm))
+          .post(Global.bg_java + '/api/login', qs.stringify(this.loginForm))
           .then(successResponse => {
             console.log(successResponse.data)
             if (successResponse.data.code !== 200) {

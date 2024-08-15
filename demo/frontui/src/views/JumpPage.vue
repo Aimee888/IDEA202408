@@ -1,6 +1,8 @@
 /* eslint-disable */
 <template>
-  <NavigationPage></NavigationPage>
+  <div>
+    <NavigationPage></NavigationPage>
+  </div>
 </template>
 <script>
 

@@ -4,12 +4,14 @@
       <el-aside class="aside">
         <div class="head">
           <div>
-            <span>vue3 admin</span>
+            <img src="@/assets/icon.png" alt="userlogo" style="width: 20px; height: 20px; object-fit: cover;">
+            <span>憨憨梅梅记账簿</span>
+            <img src="@/assets/icon.png" alt="userlogo" style="width: 20px; height: 20px; object-fit: cover;margin-left: 1px">
           </div>
         </div>
         <div class="line" />
         <el-menu
-            background-color="#222832"
+            background-color="black"
             text-color="#fff"
             :router="true"
             :default-openeds="state.defaultOpen"
@@ -17,7 +19,7 @@
         >
           <el-sub-menu index="1">
             <template #title>
-              <span>目录1</span>
+              <span>统计模块</span>
             </template>
           </el-sub-menu>
           <el-sub-menu index="2">
@@ -25,8 +27,8 @@
               <span>记账模块</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/HomePage">Home</el-menu-item>
-              <el-menu-item index="/AboutPage">About</el-menu-item>
+              <el-menu-item index="/JumpPage/HomePage">支出管理</el-menu-item>
+              <el-menu-item index="/JumpPage/AboutPage">收入管理</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
@@ -53,7 +55,7 @@ const router = useRouter()
 const state = reactive({
   showMenu: true,
   defaultOpen: ['1', '2', '3', '4'],
-  currentPath: '/',
+  currentPath: '/JumpPage/Home',
 })
 
 router.afterEach((to) => {
@@ -62,7 +64,7 @@ router.afterEach((to) => {
 
 router.beforeEach((to) => {
   state.currentPath = to.path
-  document.title = to.name
+  // document.title = to.name
 })
 </script>
 
@@ -75,8 +77,8 @@ router.beforeEach((to) => {
   height: 100vh;
 }
 .aside {
-  width: 200px!important;
-  background-color: #222832;
+  width: 220px!important;
+  background-color: black;
 }
 .head {
   display: flex;

@@ -1,5 +1,6 @@
 <!--/src/views/home.vue-->
-<template><h1>About Page</h1>
+<template>
+  <h1>About Page</h1>
   <p> {{ pageData }} </p></template>
 <script>
 export default {

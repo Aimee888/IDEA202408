@@ -12,11 +12,11 @@ const routes = [
     {
         name: '/JumpPage',
         path: '/JumpPage',
-        redirect: '/HomePage',
+        redirect: '/JumpPage/HomePage',
         component: JumpPage,
         children: [
-            {path: '/HomePage', name: 'HomePage', component: HomePage},
-            {path: '/AboutPage', name: 'AboutPage', component: AboutPage}
+            {path: '/JumpPage/HomePage', name: 'HomePage', component: HomePage},
+            {path: '/JumpPage/AboutPage', name: 'AboutPage', component: AboutPage}
         ]
     }
 ];
