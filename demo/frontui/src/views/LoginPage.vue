@@ -143,7 +143,7 @@ export default {
     Login () {
       /* http://localhost:8081/api/login */
       this.$axios
-          .post('http://localhost:8081/api/login', qs.stringify(this.loginForm))
+          .post('http://192.168.8.102:8081/api/login', qs.stringify(this.loginForm))
           .then(successResponse => {
             console.log(successResponse.data)
             if (successResponse.data.code !== 200) {

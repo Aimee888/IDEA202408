@@ -22,7 +22,7 @@
           </el-sub-menu>
           <el-sub-menu index="2">
             <template #title>
-              <span>目录2</span>
+              <span>记账模块</span>
             </template>
             <el-menu-item-group>
               <el-menu-item index="/HomePage">Home</el-menu-item>
