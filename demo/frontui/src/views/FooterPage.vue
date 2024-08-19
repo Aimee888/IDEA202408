@@ -7,7 +7,7 @@ export default {
 </script>
 
 <template>
-  <div>copyright@</div>
+  <div>Copyright © 2024 憨梅 All Rights Reserved. </div>
 </template>
 
 <style scoped>

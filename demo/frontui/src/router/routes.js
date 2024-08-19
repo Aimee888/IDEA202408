@@ -1,7 +1,7 @@
 import LoginPage from '@/views/LoginPage.vue'
-import HomePage from "@/views/HomePage.vue";
-import AboutPage from "@/views/AboutPage.vue";
-import JumpPage from "@/views/JumpPage.vue";
+import PaidPage from "@/views/RecordManagement/PaidPage.vue";
+import EarnPage from "@/views/RecordManagement/EarnPage.vue";
+import IndexPage from "@/views/IndexPage.vue";
 
 const routes = [
     {
@@ -10,13 +10,13 @@ const routes = [
         component: LoginPage
     },
     {
-        name: '/JumpPage',
-        path: '/JumpPage',
-        redirect: '/JumpPage/HomePage',
-        component: JumpPage,
+        name: '/IndexPage',
+        path: '/IndexPage',
+        redirect: '/IndexPage/PaidPage',
+        component: IndexPage,
         children: [
-            {path: '/JumpPage/HomePage', name: 'HomePage', component: HomePage},
-            {path: '/JumpPage/AboutPage', name: 'AboutPage', component: AboutPage}
+            {path: '/IndexPage/PaidPage', name: 'PaidPage', component: PaidPage},
+            {path: '/IndexPage/EarnPage', name: 'EarnPage', component: EarnPage}
         ]
     }
 ];

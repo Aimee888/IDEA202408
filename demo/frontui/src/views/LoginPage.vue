@@ -151,7 +151,7 @@ export default {
               this.loginForm.message = successResponse.data.message
             } else {
               console.log('登录成功')
-              this.$router.push({path: '/JumpPage'})
+              this.$router.push({path: '/IndexPage'})
             }
           })
           .catch(failResponse => {

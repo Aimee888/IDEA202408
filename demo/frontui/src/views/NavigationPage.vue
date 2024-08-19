@@ -4,16 +4,17 @@
       <el-aside class="aside">
         <div class="head">
           <div>
-            <img src="@/assets/icon.png" alt="userlogo" style="width: 20px; height: 20px; object-fit: cover;">
-            <span>憨憨梅梅记账簿</span>
-            <img src="@/assets/icon.png" alt="userlogo" style="width: 20px; height: 20px; object-fit: cover;margin-left: 1px">
+            <svg-icon icon-class="heart_icon" style="fill: red" />
+            <span>憨梅小屋</span>
+            <svg-icon icon-class="heart_icon" style="fill: red" />
           </div>
         </div>
         <div class="line" />
         <el-menu
-            background-color="black"
-            text-color="#fff"
+            text-color="#337ab7"
+            active-text-color="white"
             :router="true"
+            :unique-opened="true"
             :default-openeds="state.defaultOpen"
             :default-active='state.currentPath'
         >
@@ -27,8 +28,8 @@
               <span>记账模块</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/JumpPage/HomePage">支出管理</el-menu-item>
-              <el-menu-item index="/JumpPage/AboutPage">收入管理</el-menu-item>
+              <el-menu-item index="/IndexPage/PaidPage">支出管理</el-menu-item>
+              <el-menu-item index="/IndexPage/EarnPage">收入管理</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
@@ -54,8 +55,8 @@ const noMenu = ['/LoginPage']
 const router = useRouter()
 const state = reactive({
   showMenu: true,
-  defaultOpen: ['1', '2', '3', '4'],
-  currentPath: '/JumpPage/Home',
+  defaultOpen: [],
+  currentPath: '/IndexPage/PaidPage',
 })
 
 router.afterEach((to) => {
@@ -78,13 +79,13 @@ router.beforeEach((to) => {
 }
 .aside {
   width: 220px!important;
-  background-color: black;
 }
 .head {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 50px;
+  background: linear-gradient(-280deg,#006dcc 0%,#ffffff 100%);
 }
 .head > div {
   display: flex;
@@ -98,7 +99,7 @@ router.beforeEach((to) => {
 }
 .head span {
   font-size: 20px;
-  color: #ffffff;
+  color: black;
 }
 .line {
   border-top: 1px solid hsla(0,0%,100%,.05);
@@ -109,6 +110,7 @@ router.beforeEach((to) => {
   flex-direction: column;
   max-height: 100vh;
   overflow: hidden;
+  background-color: #f0f0f0;
 }
 .main {
   height: calc(100vh - 100px);
@@ -130,9 +132,16 @@ body {
   border-top: 1px solid hsla(0, 0%, 100%, .05);
   border-bottom: 1px solid rgba(0, 0, 0, .2);
 }
-.el-submenu:first-child {
-  border-top: none;
+.el-submenu__title {
+  font-size: 16px;
 }
+.el-menu-item.is-active {
+  background-color: #87CEFA;
+  span {
+    color: white;
+  }
+}
+
 .el-submenu [class^="el-icon-"] {
   vertical-align: -1px!important;
 }
