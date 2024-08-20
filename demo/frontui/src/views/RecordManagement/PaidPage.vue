@@ -18,43 +18,47 @@
     <div style="height: 30px;"></div>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button type="primary" plain>
+        <el-button type="primary" plain @click="addRow">
           <el-icon><Plus /></el-icon>
           新增
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain :disabled="single">
+        <el-button type="success" plain>
           <el-icon><Edit /></el-icon>
           修改
         </el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button
-            type="danger"
-            plain
-            icon="el-icon-delete"
-            size="mini"
-            :disabled="multiple"
-            @click="handleDelete"
-            v-hasPermi="['system:role:remove']"
-        >删除</el-button>
+        <el-button type="danger" plain>
+          <el-icon><Delete /></el-icon>
+          删除
+        </el-button>
       </el-col>
     </el-row>
     <el-table
-        :data="this.tablelist"
+        :data="tablelist"
         style="width: 50%;"
         height="780px"
-        @row-dblclick="handleRowDblClick"
+        @cell-dblclick="handleCellDblClick"
     >
       <el-table-column label="日期" prop="col1" min-width="10%" >
       </el-table-column>
-      <el-table-column label="类别" prop="col2" min-width="10%" />
+      <el-table-column label="类别" prop="col2" min-width="10%" >
+        <template #default="scope">
+          <el-form :model="scope.row">
+            <el-form-item>
+              <el-input v-if="isEditing(scope.$index, 'col2')" v-model="scope.row.col2" @blur="handleInputBlur(scope.$index,'col2')"></el-input>
+              <span v-else>{{scope.row.col2}}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column label="价格" prop="col3" min-width="10%" >
         <template #default="scope">
           <el-form :model="scope.row">
             <el-form-item>
-              <el-input v-if="scope.row.modify" v-model="scope.row.col3" @blur="handleInputBlur(scope.row)"></el-input>
+              <el-input v-if="isEditing(scope.$index, 'col3')" v-model="scope.row.col3" @blur="handleInputBlur(scope.$index,'col3')"></el-input>
               <span v-else>{{scope.row.col3}}</span>
             </el-form-item>
           </el-form>
@@ -91,15 +95,10 @@ export default {
           "col3": "12",
           "col4": "",
           "col5": "",
-        },
-        {
-          "col1": this.getCurrentDate(),
-          "col2": "",
-          "col3": "",
-          "col4": "",
-          "col5": "",
-        },
-      ]
+        }
+      ],
+      editIndexRow: null,
+      editIndexColumn: null
     }
   },
   methods:{
@@ -122,14 +121,24 @@ export default {
       let day = now.getDate();
       return year + "/" + month + "/" + day;
     },
-    handleRowDblClick(row, event, column) {
-      row.modify = true;
+    handleCellDblClick(row, column, event, cell) {
+      const rowIndex = this.tablelist.findIndex(item => item === row);
+      // 假设 column.property 是我们用来识别列的 prop
+      this.editIndexRow = rowIndex;
+      this.editIndexColumn = column.property;
     } ,
-    handleInputBlur(row) {
-      row.modify = false;
+    handleInputBlur(rowIndex, columnProp) {
+      this.editIndexRow = null;
+      this.editIndexColumn = null;
       // 在 Vue 3 中，由于 Proxy 的存在，通常不需要手动更新数组
       // 但如果你需要触发某种更新（例如，重新排序或过滤），你可能需要这样做
       // 这里我们不需要，因为数据已经是响应式的
+    },
+    isEditing(rowIndex, columnProp) {
+      return this.editIndexRow === rowIndex && this.editIndexColumn === columnProp;
+    },
+    addRow(){
+      this.tablelist.push({ col1: this.getCurrentDate(), col2: '', col3: '', col4: '', col5: '', });
     }
   }
 }
