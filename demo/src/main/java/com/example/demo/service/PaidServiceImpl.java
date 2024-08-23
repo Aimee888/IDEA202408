@@ -29,6 +29,19 @@ public class PaidServiceImpl implements PaidService {
     }
 
     @Override
+    public List<PaidForm> getPaidListByDate(String date) {
+        try{
+            List<PaidForm> paidList= paidMapper.getPaidListByDate(date);
+            return paidList;
+
+        }catch (Exception e){
+            //好像是 如果不throw的话，会报错。。。
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
     public Boolean addPaid(String date, String type, Double price, String detaildescription, Integer tag, Timestamp createdate) {
         try{
             return paidMapper.addPaid(date, type, price, detaildescription, tag, createdate);

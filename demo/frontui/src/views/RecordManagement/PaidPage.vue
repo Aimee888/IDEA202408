@@ -1,20 +1,25 @@
 <!--/src/views/home.vue-->
 <template>
   <el-card>
-    <div class="year-month-day-filters">
-      <select v-model="selectedYear">
-        <option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</option>
-      </select>
-      <div>年</div>
-      <select v-model="selectedMonth">
-        <option v-for="month in monthOptions" :key="month" :value="month">{{ month }}</option>
-      </select>
-      <div>月</div>
-      <select v-model="selectedDay">
-        <option v-for="day in dayOptions" :key="day" :value="day">{{ day }}</option>
-      </select>
-      <div>日</div>
-    </div>
+    <el-row>
+      <el-col :span="6">
+        <div class="year-month-day-filters">
+          <el-select v-model="selectedYear" placeholder="请选择年份" @change="handleChangeYear">
+            <el-option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</el-option>
+          </el-select>
+          <div>年</div>
+          <el-select v-model="selectedMonth" placeholder="请选择月份" @change="handleChangeMonth">
+            <el-option v-for="month in monthOptions" :key="month" :value="month">{{ month }}</el-option>
+          </el-select>
+          <div>月</div>
+          <el-select v-model="selectedDay" placeholder="请选择日期" clearable @change="handleChangeDay">
+            <el-option v-for="day in dayOptions" :key="day" :value="day">{{ day }}</el-option>
+          </el-select>
+          <div>日</div>
+        </div>
+      </el-col>
+    </el-row>
+
     <div style="height: 30px;"></div>
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
@@ -28,7 +33,6 @@
         :data="tablelist"
         style="width: 50%;"
         height="780px"
-        @selection-change="handleSelectionChange"
     >
       <el-table-column
           label="操作"
@@ -99,12 +103,12 @@ import Global from "@/components/GlobalIp.vue";
 export default {
   data () {
     return {
-      selectedYear: this.getCurrentYear(),
-      selectedMonth: this.getCurrentMonth(),
-      selectedDay: this.getCurrentDay(),
-      yearOptions: [...Array(10).keys()].map(i => 2024 + i), // 假设从2020年开始，持续10年
-      monthOptions: [...Array(12).keys()].map(i => i + 1), // 1到12月
-      dayOptions: [...Array(31).keys()].map(i => i + 1), // 1到31日
+      selectedYear: undefined,
+      selectedMonth: undefined,
+      selectedDay: undefined,
+      yearOptions: undefined,
+      monthOptions: undefined,
+      dayOptions: undefined,
       // 数据绑定对象
       tablelist: [],
       editIndexRow: null,
@@ -122,12 +126,26 @@ export default {
     }
   },
   mounted() {
+    this.selectedYear = new Date().getFullYear()
+    this.selectedMonth = new Date().getMonth() + 1
+    this.selectedDay = new Date().getDate()
+    this.yearOptions = Array.from({ length: 10 }, (_, i) => 2023 + i)
+    this.monthOptions = Array.from({ length: 12 }, (_, i) => i + 1)
+    if(this.selectedMonth === 1 || this.selectedMonth ===3 || this.selectedMonth ===5 || this.selectedMonth ===7 || this.selectedMonth ===8 || this.selectedMonth === 10 || this.selectedMonth ===12){
+      this.dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+    }
+    else{
+      this.dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
+    }
     this.getdata()
   },
   methods:{
     getdata() {
+      let data = {
+        date: this.formattedDate(this.selectedYear, this.selectedMonth, this.selectedDay)
+      }
       this.$axios
-          .get(Global.bg_java + '/api/getpaidlist')
+          .post(Global.bg_java + '/api/getpaidlistbydate', data)
           .then(successResponse => {
             console.log(successResponse.data)
             if (successResponse.data.code !== 200) {
@@ -143,18 +161,6 @@ export default {
             console.log(failResponse)
           })
     },
-    getCurrentYear() {
-      let now = new Date();
-      return now.getFullYear();
-    },
-    getCurrentMonth() {
-      let now = new Date();
-      return now.getMonth() + 1;
-    },
-    getCurrentDay() {
-      let now = new Date();
-      return now.getDate();
-    },
     getCurrentDate() {
       let now = new Date();
       let year = now.getFullYear();
@@ -168,6 +174,24 @@ export default {
       let monthtmp = String(month).padStart(2, '0');
       let daytmp = String(day).padStart(2, '0');
       return `${year}-${monthtmp}-${daytmp}`;
+    },
+    handleChangeYear(value) {
+      console.log('Year changed to:', value);
+      this.getdata()
+    },
+    handleChangeMonth(value) {
+      console.log('Month changed to:', value);
+      if(this.selectedMonth === 1 || this.selectedMonth ===3 || this.selectedMonth ===5 || this.selectedMonth ===7 || this.selectedMonth ===8 || this.selectedMonth === 10 || this.selectedMonth ===12){
+        this.dayOptions = Array.from({ length: 31 }, (_, i) => i + 1)
+      }
+      else{
+        this.dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
+      }
+      this.getdata()
+    },
+    handleChangeDay(value) {
+      console.log('Day changed to:', value);
+      this.getdata()
     },
     addRow(){
       if(!this.addstatus){

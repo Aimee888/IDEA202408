@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.PaidForm;
 import com.example.demo.entity.ResultVo;
-import com.example.demo.entity.User;
 import com.example.demo.service.PaidServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +22,16 @@ public class PaidController {
     public ResultVo getPaidList()
     {
         List<PaidForm> paidList = paidServer.getPaidList();
+        return new ResultVo(200, "", paidList);
+    }
+
+    @PostMapping("/getpaidlistbydate")
+    public ResultVo getPaidListByDate(@RequestBody PaidForm paidForm)
+    {
+        String date = paidForm.getDate();
+        date = date.replaceAll("undefined", "%");
+        System.err.println(date);
+        List<PaidForm> paidList = paidServer.getPaidListByDate(date);
         return new ResultVo(200, "", paidList);
     }
 
