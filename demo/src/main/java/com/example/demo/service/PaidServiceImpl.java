@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.PaidForm;
+import com.example.demo.entity.PaidTotal;
 import com.example.demo.entity.User;
 import com.example.demo.mapper.PaidMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,19 @@ public class PaidServiceImpl implements PaidService {
         try{
             List<PaidForm> paidList= paidMapper.getPaidList();
             return paidList;
+
+        }catch (Exception e){
+            //好像是 如果不throw的话，会报错。。。
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public List<PaidTotal> getTotalList() {
+        try{
+            List<PaidTotal> paidTotalList= paidMapper.getTotalList();
+            return paidTotalList;
 
         }catch (Exception e){
             //好像是 如果不throw的话，会报错。。。

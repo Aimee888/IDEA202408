@@ -1,100 +1,124 @@
 <!--/src/views/home.vue-->
 <template>
   <el-card>
-    <el-row>
-      <el-col :span="6">
-        <div class="year-month-day-filters">
-          <el-select v-model="selectedYear" placeholder="请选择年份" @change="handleChangeYear">
-            <el-option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</el-option>
-          </el-select>
-          <div>年</div>
-          <el-select v-model="selectedMonth" placeholder="请选择月份" @change="handleChangeMonth">
-            <el-option v-for="month in monthOptions" :key="month" :value="month">{{ month }}</el-option>
-          </el-select>
-          <div>月</div>
-          <el-select v-model="selectedDay" placeholder="请选择日期" clearable @change="handleChangeDay">
-            <el-option v-for="day in dayOptions" :key="day" :value="day">{{ day }}</el-option>
-          </el-select>
-          <div>日</div>
-        </div>
-      </el-col>
-    </el-row>
+    <el-row :gutter="0">
+      <el-col :span="12" :xs="24">
+        <el-card>
+          <el-row>
+            <el-col :span="12">
+              <div class="year-month-day-filters">
+                <el-select v-model="selectedYear" placeholder="请选择年份" @change="handleChangeYear">
+                  <el-option v-for="year in yearOptions" :key="year" :value="year">{{ year }}</el-option>
+                </el-select>
+                <div>年</div>
+                <el-select v-model="selectedMonth" placeholder="请选择月份" @change="handleChangeMonth">
+                  <el-option v-for="month in monthOptions" :key="month" :value="month">{{ month }}</el-option>
+                </el-select>
+                <div>月</div>
+                <el-select v-model="selectedDay" placeholder="请选择日期" clearable @change="handleChangeDay">
+                  <el-option v-for="day in dayOptions" :key="day" :value="day">{{ day }}</el-option>
+                </el-select>
+                <div>日</div>
+              </div>
+            </el-col>
+          </el-row>
 
-    <div style="height: 30px;"></div>
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button type="primary" plain @click="addRow">
-          <el-icon><Plus /></el-icon>
-          新增
-        </el-button>
+          <div style="height: 30px;"></div>
+          <el-row :gutter="10" class="mb8">
+            <el-col :span="1.5">
+              <el-button type="primary" plain @click="addRow">
+                <el-icon><Plus /></el-icon>
+                新增
+              </el-button>
+            </el-col>
+          </el-row>
+          <el-table
+              :data="tablelist"
+              style="width: 100%;"
+              height="780px"
+          >
+            <el-table-column
+                label="操作"
+                min-width="8%">
+              <template #default="scope">
+                <el-tooltip content="Edit" placement="top">
+                  <el-button link type="primary" icon="Edit" @click="handleEdit(scope.row)"></el-button>
+                </el-tooltip>
+                <el-tooltip content="Remove" placement="top">
+                  <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"></el-button>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+            <el-table-column label="日期" prop="date" min-width="15%" >
+              <template #default="scope">
+                <!-- 如果行正在编辑，则显示日期选择器 -->
+                <el-date-picker
+                    v-if="scope.row.isEditing"
+                    v-model="scope.row.date"
+                    type="date"
+                    placeholder="选择日期"
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD"
+                    style="width: 100%;"
+                ></el-date-picker>
+                <!-- 如果行不在编辑状态，则显示日期字符串 -->
+                <span v-else>{{ scope.row.date }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="类别" prop="type" min-width="10%" >
+              <template #default="scope">
+                <el-input v-if="scope.row.isEditing" v-model="scope.row.type"></el-input>
+                <span v-else>{{scope.row.type}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="价格" prop="price" min-width="10%" >
+              <template #default="scope">
+                <el-input v-if="scope.row.isEditing" v-model="scope.row.price"></el-input>
+                <span v-else>{{scope.row.price}}</span>
+              </template>
+            </el-table-column>
+<!--            <el-table-column label="详细描述" prop="detaildescription" min-width="20%" >-->
+<!--              <template #default="scope">-->
+<!--                <el-input v-if="scope.row.isEditing" v-model="scope.row.detaildescription"></el-input>-->
+<!--                <span v-else>{{scope.row.detaildescription}}</span>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+            <el-table-column label="标签" prop="tag" min-width="10%" >
+              <template v-slot="scope">
+                <el-select  v-if="scope.row.isEditing" v-model="scope.row.tag" value-key="paid_id" style="width: 100%" placeholder="select a type">
+                  <el-option :label="pro.paid_type" :value="pro.paid_id" v-for="pro in paidtype" :key="pro.paid_id" ></el-option>
+                </el-select>
+                <el-tag v-else :type="getStatusType(scope.row.tag)">{{ getPaidTypeName(scope.row.tag) }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column min-width="10%" >
+              <template #default="scope">
+                <el-button v-if="scope.row.isEditing" style="background-color: #00ff7f" @click="editFinished(scope.row)">OK</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-card>
+      </el-col>
+      <el-col :span="12" :xs="24">
+        <el-card style="padding-left: 50px">
+          <el-table :data="totallist"
+                    style="width: 100%;"
+                    height="780px">
+            <el-table-column label="日期" prop="date" min-width="15%" ></el-table-column>
+            <el-table-column label="食物" prop="food_price" min-width="10%" ></el-table-column>
+            <el-table-column label="日常用品" prop="normal_price" min-width="10%" ></el-table-column>
+            <el-table-column label="衣物" prop="clothing_price" min-width="10%" ></el-table-column>
+            <el-table-column label="旅游" prop="travel_price" min-width="10%" ></el-table-column>
+            <el-table-column label="医疗" prop="medical_price" min-width="10%" ></el-table-column>
+            <el-table-column label="车费" prop="car_price" min-width="10%" ></el-table-column>
+            <el-table-column label="人情往来" prop="favor_price" min-width="10%" ></el-table-column>
+            <el-table-column label="合计" prop="total_price" min-width="10%" ></el-table-column>
+          </el-table>
+        </el-card>
       </el-col>
     </el-row>
-    <el-table
-        :data="tablelist"
-        style="width: 50%;"
-        height="780px"
-    >
-      <el-table-column
-          label="操作"
-          min-width="8%">
-        <template #default="scope">
-          <el-tooltip content="Edit" placement="top">
-            <el-button link type="primary" icon="Edit" @click="handleEdit(scope.row)"></el-button>
-          </el-tooltip>
-          <el-tooltip content="Remove" placement="top">
-            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"></el-button>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-      <el-table-column label="日期" prop="date" min-width="15%" >
-        <template #default="scope">
-          <!-- 如果行正在编辑，则显示日期选择器 -->
-          <el-date-picker
-              v-if="scope.row.isEditing"
-              v-model="scope.row.date"
-              type="date"
-              placeholder="选择日期"
-              format="YYYY-MM-DD"
-              value-format="YYYY-MM-DD"
-              style="width: 100%;"
-          ></el-date-picker>
-          <!-- 如果行不在编辑状态，则显示日期字符串 -->
-          <span v-else>{{ scope.row.date }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="类别" prop="type" min-width="10%" >
-        <template #default="scope">
-          <el-input v-if="scope.row.isEditing" v-model="scope.row.type"></el-input>
-          <span v-else>{{scope.row.type}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="价格" prop="price" min-width="10%" >
-        <template #default="scope">
-          <el-input v-if="scope.row.isEditing" v-model="scope.row.price"></el-input>
-          <span v-else>{{scope.row.price}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="详细描述" prop="detaildescription" min-width="20%" >
-        <template #default="scope">
-          <el-input v-if="scope.row.isEditing" v-model="scope.row.detaildescription"></el-input>
-          <span v-else>{{scope.row.detaildescription}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标签" prop="tag" min-width="10%" >
-        <template v-slot="scope">
-          <el-select  v-if="scope.row.isEditing" v-model="scope.row.tag" value-key="paid_id" style="width: 100%" placeholder="select a type">
-            <el-option :label="pro.paid_type" :value="pro.paid_id" v-for="pro in paidtype" :key="pro.paid_id" ></el-option>
-          </el-select>
-          <el-tag v-else :type="getStatusType(scope.row.tag)">{{ getPaidTypeName(scope.row.tag) }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column min-width="10%" >
-        <template #default="scope">
-          <el-button v-if="scope.row.isEditing" style="background-color: #00ff7f" @click="editFinished(scope.row)">OK</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
   </el-card>
+
 </template>
 
 <script>
@@ -111,17 +135,10 @@ export default {
       dayOptions: undefined,
       // 数据绑定对象
       tablelist: [],
+      totallist: [],
       editIndexRow: null,
       editIndexColumn: null,
-      paidtype: [
-          {"paid_id": 1, "paid_type": "食物"},
-          {"paid_id": 2, "paid_type": "日常用品"},
-          {"paid_id": 3, "paid_type": "衣物"},
-          {"paid_id": 4, "paid_type": "旅游"},
-          {"paid_id": 5, "paid_type": "医疗"},
-          {"paid_id": 6, "paid_type": "车费"},
-          {"paid_id": 7, "paid_type": "人情往来"},
-      ],
+      paidtype: undefined,
       addstatus: false,
     }
   },
@@ -137,9 +154,29 @@ export default {
     else{
       this.dayOptions = Array.from({ length: 30 }, (_, i) => i + 1)
     }
+    this.gettag()
     this.getdata()
+    this.gettotaldata()
   },
   methods:{
+    gettag(){
+      this.$axios
+          .get(Global.bg_java + '/api/gettaglist')
+          .then(successResponse => {
+            console.log(successResponse.data)
+            if (successResponse.data.code !== 200) {
+              console.log('获取tag失败')
+            } else {
+              console.log('获取tag成功')
+              this.paidtype = successResponse.data.data
+              console.log( this.paidtype)
+            }
+          })
+          .catch(failResponse => {
+            console.log('12345566')
+            console.log(failResponse)
+          })
+    },
     getdata() {
       let data = {
         date: this.formattedDate(this.selectedYear, this.selectedMonth, this.selectedDay)
@@ -154,6 +191,24 @@ export default {
               console.log('获取成功')
               this.tablelist = successResponse.data.data
               console.log(this.tablelist)
+            }
+          })
+          .catch(failResponse => {
+            console.log('12345566')
+            console.log(failResponse)
+          })
+    },
+    gettotaldata(){
+      this.$axios
+          .get(Global.bg_java + '/api/gettotallist')
+          .then(successResponse => {
+            console.log(successResponse.data)
+            if (successResponse.data.code !== 200) {
+              console.log('获取total list失败')
+            } else {
+              console.log('获取total list成功')
+              this.totallist = successResponse.data.data
+              console.log(this.totallist)
             }
           })
           .catch(failResponse => {
@@ -311,6 +366,9 @@ export default {
 <style scoped>
 .el-card{
   height: 800px;
+}
+.el-col {
+  padding: 10px;
 }
 .year-month-day-filters {
   display: flex;
