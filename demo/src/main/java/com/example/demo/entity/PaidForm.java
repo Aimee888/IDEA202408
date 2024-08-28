@@ -16,6 +16,10 @@ public class PaidForm implements Serializable {
     public String getDate(){
         return this.date;
     }
+
+    public void setDate(String Date){
+        date = Date;
+    }
     public String getType(){
         return this.type;
     }

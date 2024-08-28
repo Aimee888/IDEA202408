@@ -31,6 +31,36 @@ public class PaidController {
     {
         System.err.println("=======================");
         List<PaidTotal> paidTotalList = paidServer.getTotalList();
+        PaidTotal paidTotal = new PaidTotal();
+        paidTotal.setDate("合计");
+        Double food_price = 0.0;
+        Double normal_price = 0.0;
+        Double clothing_price = 0.0;
+        Double travel_price = 0.0;
+        Double medical_price = 0.0;
+        Double car_price = 0.0;
+        Double favor_price = 0.0;
+        Double total_price = 0.0;
+        for(PaidTotal ptl:paidTotalList){
+            food_price += ptl.getFood_price();
+            normal_price += ptl.getNormal_price();
+            clothing_price += ptl.getClothing_price();
+            travel_price += ptl.getTravel_price();
+            medical_price += ptl.getMedical_price();
+            car_price += ptl.getCar_price();
+            favor_price += ptl.getFavor_price();
+            total_price += ptl.getTotal_price();
+        }
+        paidTotal.setFood_price(food_price);
+        paidTotal.setNormal_price(normal_price);
+        paidTotal.setClothing_price(clothing_price);
+        paidTotal.setTravel_price(travel_price);
+        paidTotal.setMedical_price(medical_price);
+        paidTotal.setCar_price(car_price);
+        paidTotal.setFavor_price(favor_price);
+        paidTotal.setTotal_price(total_price);
+        paidTotalList.add(paidTotal);
+        System.out.println(paidTotalList);
         return new ResultVo(200, "", paidTotalList);
     }
 

@@ -103,7 +103,8 @@
         <el-card style="padding-left: 50px">
           <el-table :data="totallist"
                     style="width: 100%;"
-                    height="780px">
+                    height="780px"
+          >
             <el-table-column label="日期" prop="date" min-width="15%" ></el-table-column>
             <el-table-column label="食物" prop="food_price" min-width="10%" ></el-table-column>
             <el-table-column label="日常用品" prop="normal_price" min-width="10%" ></el-table-column>
